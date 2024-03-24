@@ -1,69 +1,212 @@
-import React, { useState } from 'react';
-import { View, Text, StatusBar, TouchableOpacity, ScrollView } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, Text, StatusBar, ScrollView, StyleSheet, ActivityIndicator } from 'react-native';
 import Header from '../../components/header/Header';
 import BottomBar from '../../components/bottombar/BottomBar';
 import SearchableDropdown from 'react-native-searchable-dropdown';
+import axios from 'axios';
 
 export default function SearchStop() {
-  const [selectedStop, setSelectedStop] = useState('');
   const [stops] = useState([
     { id: 1, name: 'Library' },
-    { id: 2, name: 'Stop 2' },
-    { id: 3, name: 'Stop 3' }
+    { id: 2, name: 'Ponlite ' },
+    { id: 3, name: 'Narmada' },
+    { id: 4, name: 'BoysMess' },
+    { id: 5, name: 'FoodScience' },
+    { id: 6, name: 'Sj' },
   ]);
+  const [data, setData] = useState({
+    towardLibrary: [],
+    towardSJ: []
+  });
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
 
-  const handleShowAllTimings = () => {
-    // Implement logic to show all timings for the selected stop
-    // For example, you can reset the selected stop
-    setSelectedStop('');
+  const fetchData = (selectedStartPoint) => {
+    setLoading(true);
+    setError(null);
+    const URL = `${process.env.EXPO_PUBLIC_API_HOST}/api/bus/getbustime`;
+    axios.post(URL, { stoppage: selectedStartPoint })
+      .then(response => {
+        if (response.data.message) {
+          // If there's an error message in the response, handle it
+          console.error('Error fetching data:', response.data.message);
+          setError(new Error(response.data.message));
+          setData({ towardLibrary: [], towardSJ: [] }); // Set empty data to avoid 'undefined' errors
+        } else {
+          // Set the data if there's no error message
+          setData(response.data);
+        }
+        setLoading(false);
+      })
+      .catch(error => {
+        console.error('Error fetching data:', error.message);
+        setError(error);
+        setLoading(false);
+      });
   };
+
+  const handleStartPointSelect = (stop) => {
+    fetchData(stop.name);
+  };
+
+  // Assuming you have useState for data, loading, and error states
 
   return (
     <>
-      <StatusBar backgroundColor={'#F08E0F'} />
+      <StatusBar backgroundColor={'green'} />
       <Header />
-      <View style={{ flex: 1 }}>
-          <View style={{ paddingHorizontal: 20, paddingTop: 10 }}>
+      <View style={styles.container}>
+        <View style={styles.searchContainer}>
+          <Text style={styles.title}>Select 🚌 Locations</Text>
+          <View style={styles.dropdownContainer}>
+            <Text style={styles.dropdownLabel}>Stopage :</Text>
             <SearchableDropdown
               onTextChange={(text) => console.log(text)}
-              onItemSelect={(stop) => setSelectedStop(stop.name)}
-              containerStyle={{ padding: 5 }}
-              textInputStyle={{
-                padding: 12,
-                borderWidth: 1,
-                borderColor: '#ccc',
-                borderRadius: 5,
-              }}
-              itemStyle={{
-                padding: 10,
-                marginTop: 2,
-                backgroundColor: '#ddd',
-                borderColor: '#bbb',
-                borderWidth: 1,
-                borderRadius: 5,
-              }}
-              itemTextStyle={{ color: '#222' }}
-              itemsContainerStyle={{ maxHeight: 140 }}
+              onItemSelect={handleStartPointSelect}
+              containerStyle={styles.dropdown}
+              textInputStyle={styles.dropdownInput}
+              itemStyle={styles.dropdownItem}
+              itemTextStyle={styles.dropdownItemText}
               items={stops}
               defaultIndex={0}
-              placeholder="Select stop"
+              placeholder="Current Stopage"
               resetValue={false}
               underlineColorAndroid="transparent"
             />
-            <TouchableOpacity
-              style={{
-                backgroundColor: '#F08E0F',
-                paddingVertical: 10,
-                borderRadius: 5,
-                alignItems: 'center',
-                marginTop: 10,
-              }}
-              onPress={handleShowAllTimings}>
-              <Text style={{ color: '#FFF' }}>Show All Timings</Text>
-            </TouchableOpacity>
           </View>
+          {loading ? (
+            <ActivityIndicator size="large" color="#3498DB" />
+          ) : error ? (
+            <Text style={styles.errorText}>Error: {error.message}</Text>
+          ) : (
+            data && data.towardSJ && data.towardLibrary ? (
+              <View style={{ flex: 1 }}>
+                <View style={styles.table}>
+                  <View style={styles.tableRowHeader}>
+                    <Text style={styles.tableCellHeader}>Towards SJ</Text>
+                    <Text style={styles.tableCellHeader}>Towards Library</Text>
+                  </View>
+                  <View style={styles.tableRow}>
+                    {data.towardSJ.map((item, index) => (
+                      <Text key={`towardSJ-${index}`} style={styles.tableCell}>
+                        {item}
+                      </Text>
+                    ))}
+                    {data.towardLibrary.map((item, index) => (
+                      <Text key={`towardLibrary-${index}`} style={styles.tableCell}>
+                        {item}
+                      </Text>
+                    ))}
+                  </View>
+                </View>
+              </View>
+            ) : (
+              <Text style={styles.errorText}>No data available</Text>
+            )
+          )}
+
+        </View>
       </View>
       <BottomBar />
     </>
   );
+
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    paddingHorizontal: 20,
+    paddingTop: 10,
+    marginBottom: 70,
+    backgroundColor: '#F4F6F7',
+  },
+  searchContainer: {
+    flex: 1,
+    backgroundColor: '#FFFFFF',
+    borderRadius: 15,
+    padding: 20,
+  },
+  title: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    marginBottom: 15,
+    textAlign: 'center',
+    color: '#34495E',
+  },
+  dropdownContainer: {
+    marginBottom: 20,
+  },
+  dropdownLabel: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    marginBottom: 5,
+    color: '#34495E',
+    textAlign: 'center',
+  },
+  dropdown: {
+    borderWidth: 3,
+    borderColor: '#BDC3C7',
+    borderRadius: 10,
+    width: 280,
+  },
+  dropdownInput: {
+    padding: 1,
+    fontSize: 15,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    color: '#34495E',
+    height: 40,
+  },
+  dropdownItem: {
+    padding: 10,
+    backgroundColor: '#ECF0F1',
+    borderColor: '#BDC3C7',
+    borderWidth: 3,
+    borderRadius: 5,
+    marginBottom: 5,
+    width: 270,
+  },
+  dropdownItemText: {
+    color: '#34495E',
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  table: {
+    borderWidth: 1,
+    borderColor: '#BDC3C7',
+    borderRadius: 10,
+    backgroundColor: '#FFFFFF',
+  },
+  tableRowHeader: {
+    flexDirection: 'row',
+    backgroundColor: '#3498DB',
+    paddingVertical: 8,
+    borderTopLeftRadius: 10,
+    borderTopRightRadius: 10,
+  },
+  tableRow: {
+    flexDirection: 'row',
+    borderBottomWidth: 1,
+    borderBottomColor: '#BDC3C7',
+    paddingVertical: 8,
+  },
+  tableCellHeader: {
+    flex: 1,
+    textAlign: 'center',
+    fontWeight: 'bold',
+    color: '#FFFFFF',
+    fontSize: 18,
+  },
+  tableCell: {
+    flex: 1,
+    textAlign: 'center',
+    color: '#34495E',
+  },
+  errorText: {
+    color: 'red',
+    textAlign: 'center',
+    marginTop: 10,
+    fontSize: 16,
+  },
+});
