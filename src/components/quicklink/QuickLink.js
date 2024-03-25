@@ -19,6 +19,9 @@ const QuickLink = () => {
     else if(action  == 'University Map'){
       navigation.navigate("Map")
     }
+    else if(action == 'Uni Complaints'){
+      navigation.navigate('SelectComplaint')
+    }
   }
 
   return (

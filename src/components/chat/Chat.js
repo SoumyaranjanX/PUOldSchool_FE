@@ -4,7 +4,7 @@ import ChatBubble from "./ChatBubble";
 import { io } from "socket.io-client";
 import axios from "axios";
 
-const socket = io(process.env.EXPO_PUBLIC_SOCKET_HOST);
+const socket = io(process.env.EXPO_PUBLIC_API_HOST);
 
 export default function Chat({ community = false }) {
     const [messagesData, setMessagesData] = useState([]);
@@ -18,22 +18,19 @@ export default function Chat({ community = false }) {
     const ecom = require('../../../assets/ecom.png')
 
     useEffect(() => {
-        fetchMessages(pageNumber);
+        fetchMessages(pageNumber)
     }, []);
 
     useEffect(() => {
         socket.on("receive_message", (data) => {
             setMessagesData(prevMessages => [...prevMessages, data]);
+            console.log(data)
         });
 
         return () => {
             socket.off("receive_message");
         };
     }, []);
-
-    useEffect(() => {
-        scrollToBottom();
-    }, [messagesData]);
 
     const fetchMessages = (page) => {
         const getMessagesURL = `${process.env.EXPO_PUBLIC_API_HOST}/api/chat/fetchMessages`;
@@ -102,6 +99,7 @@ export default function Chat({ community = false }) {
     };
 
     const scrollToBottom = () => {
+        console.log("scrolling down")
         scrollViewRef.current.scrollToEnd({ animated: false });
     };
 
@@ -129,6 +127,7 @@ export default function Chat({ community = false }) {
                 }}
                 onScroll={handleScroll}
                 scrollEventThrottle={16}
+                onContentSizeChange={() => {pageNumber==1?scrollToBottom():''}}
             >
 
                 {messagesData.map((data, index) => (
@@ -137,7 +136,9 @@ export default function Chat({ community = false }) {
                         pColor={data.selectedPColor}
                         message={data.message}
                         messageType={data.selectedType}
-                        messageTime={data.messageTime} />
+                        messageTime={data.messageTime} 
+                        imageUrl={data.imageUrl}
+                        />
                 ))}
 
             </ScrollView>

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { View, Image, ScrollView, Dimensions, TouchableOpacity, Modal } from 'react-native';
+import { View, Image, ScrollView, Dimensions, TouchableOpacity, Modal, Text } from 'react-native';
 import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import SliderDetails from './SliderDetails'; // Import the SliderDetails component
@@ -22,12 +22,13 @@ const Slider = () => {
                             Authorization: `Bearer ${accessToken}`,
                         },
                     })
-                    .then(response => {
-                        setEvents(response.data.data);
-                    })
-                    .catch(error => {
-                        console.log(error.response.data);
-                    });
+                        .then(response => {
+                            setEvents(response.data.data);
+                            console.log(events)
+                        })
+                        .catch(error => {
+                            console.log(error.response.data);
+                        });
                 } else {
                     console.log("Access token not found");
                 }
@@ -72,15 +73,23 @@ const Slider = () => {
                 showsHorizontalScrollIndicator={false}
                 onMomentumScrollEnd={handlePageChange}
             >
-                {events.map((event, index) => (
-                    <TouchableOpacity key={index} onPress={() => handleImagePress(index)}>
-                        <Image
-                            source={{ uri: event.imageUrl }} // Assuming imageUrl is the property containing the image URL
-                            style={{ width: Dimensions.get('window').width, height: Dimensions.get('window').width * 0.5 }} // Adjust the aspect ratio as per your need (e.g., 0.5 for 2:1 aspect ratio)
-                            resizeMode="cover"
-                        />
-                    </TouchableOpacity>
-                ))}
+                {events ? (
+                    events.map((event, index) => (
+                        <TouchableOpacity key={index} onPress={() => handleImagePress(index)}>
+                            <Image
+                                source={{ uri: event.imageUrl }}
+                                style={{
+                                    width: Dimensions.get('window').width,
+                                    height: Dimensions.get('window').width * 0.5,
+                                }}
+                                resizeMode="cover"
+                            />
+                        </TouchableOpacity>
+                    ))
+                ) : (
+                    <Text>No events to display</Text>
+                )}
+
             </ScrollView>
 
             {/* Modal for displaying details */}

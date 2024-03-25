@@ -1,8 +1,7 @@
-import React, { useState, useEffect } from 'react';
-import { createStackNavigator } from '@react-navigation/stack';
+import React, {useEffect, useState} from 'react';
 import { NavigationContainer } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 import Home from './src/screens/home/Home';
 import Community from './src/screens/community/Community';
@@ -13,10 +12,11 @@ import Profile from './src/screens/profile/Profile';
 import Announcement from './src/screens/annoucement/Announcement';
 import SearchStop from './src/screens/transportation/SearchStop';
 import RequestEvent from './src/screens/events/RequestEvent';
-import Logout from './src/components/profile/Logout';
 import Map from './src/screens/map/Map';
+import SelectComplaint from './src/screens/complaints/SelectComplaint'
+import Electrical from './src/screens/complaints/Electrical';
 
-const Stack = createStackNavigator();
+const Stack = createNativeStackNavigator();
 
 export default function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -25,7 +25,6 @@ export default function App() {
   useEffect(() => {
     // Check if the user is authenticated on app startup
     checkAuthStatus();
-    console.log(isAuthenticated)
   }, []);
 
   const checkAuthStatus = async () => {
@@ -59,7 +58,6 @@ export default function App() {
   };
 
   return (
-    <GestureHandlerRootView style={{ flex: 1 }}>
       <NavigationContainer>
         <Stack.Navigator
           initialRouteName={isAuthenticated ? 'Home' : 'SignIn'}
@@ -75,6 +73,8 @@ export default function App() {
               <Stack.Screen name="Announcement" component={Announcement} />
               <Stack.Screen name="RequestEvent" component={RequestEvent} />
               <Stack.Screen name="Map" component={Map} />
+              <Stack.Screen name="SelectComplaint" component={SelectComplaint} />
+              <Stack.Screen name="ElectricalComplaint" component={Electrical} />
 
               <Stack.Screen name="Profile" >
                 {(props) => <Profile {...props} onSignOut={handleSignOut} />}
@@ -91,6 +91,5 @@ export default function App() {
           )}
         </Stack.Navigator>
       </NavigationContainer>
-    </GestureHandlerRootView>
   );
 }

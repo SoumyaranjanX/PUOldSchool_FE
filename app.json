@@ -21,10 +21,17 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.soumyaranjanx.PUOldSchoolV1"
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    }
+    },
+    "extra": {
+      "eas": {
+        "projectId": "5386754d-e375-4d47-9c62-c69cd0630eb1"
+      }
+    },
+    "owner": "soumyaranjanx"
   }
 }
