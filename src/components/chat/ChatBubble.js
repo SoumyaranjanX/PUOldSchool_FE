@@ -1,8 +1,9 @@
 import { View, Text, Image, Animated, Easing } from "react-native"
 import { useEffect } from "react";
 
-export default function ChatBubble({ bgColor, pColor, message, messageType, messageTime }) {
-    const userImage = require('../../../assets/user.webp')
+export default function ChatBubble({ bgColor, pColor, message, messageType, messageTime, imageUrl }) {
+    const userImage = imageUrl
+
     // Parse messageTime into a Date object
     const messageDate = new Date(messageTime);
 
@@ -64,7 +65,7 @@ export default function ChatBubble({ bgColor, pColor, message, messageType, mess
             <View style={{ width: 70 }}>
                 <View style={{ width: 45, height: 45, backgroundColor: 'blue', borderRadius: 50, overflow: 'hidden' }}>
                     <Image
-                        source={userImage}
+                        source={{ uri: userImage }}
                         style={{ width: '100%', height: '100%' }}
                     />
                 </View>

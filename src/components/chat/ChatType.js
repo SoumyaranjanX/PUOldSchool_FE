@@ -2,11 +2,12 @@ import { View, TextInput, Image, TouchableOpacity } from "react-native"
 import SingleChatType from "./SingleChatType"
 import { useState } from "react"
 import { Feather } from 'react-native-vector-icons';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
 import io from 'socket.io-client';
 
-const socket = io(process.env.EXPO_PUBLIC_SOCKET_HOST);
+const socket = io(process.env.EXPO_PUBLIC_API_HOST);
 
 export default function ChatType() {
     const [message, setMessage] = useState("")
@@ -15,16 +16,23 @@ export default function ChatType() {
     const [selectedBGColor, setSelectedBGColor] = useState(null);
     const [selectedPColor, setSelectedPColor] = useState(null);
 
-    const sendMessage = () => {
-        socket.emit("send_message", {
-            message: message, 
-            selectedType: selectedType, 
-            selectedImage: selectedImage,
-            selectedBGColor: selectedBGColor,
-            selectedPColor: selectedPColor,
-            messageTime: new Date()
-        })
-        setMessage('')
+    const sendMessage = async () => {
+        const accessToken = await AsyncStorage.getItem('accessToken');
+        if (accessToken) {
+            socket.emit("send_message", {
+                message: message, 
+                selectedType: selectedType, 
+                selectedImage: selectedImage,
+                selectedBGColor: selectedBGColor,
+                selectedPColor: selectedPColor,
+                messageTime: new Date(),
+                accessToken: accessToken
+            })
+            setMessage('')
+        }
+        else{
+
+        }
         setSelectedType(null)
     }
     const handleInput = (e) => {
