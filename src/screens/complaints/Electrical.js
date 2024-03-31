@@ -529,29 +529,50 @@ const Electrical = () => {
   };
 
   const handleSubmit = async () => {
-    const URL = `https://backup.pondiuni.edu.in/services/eems/complaintform_student_insert.php`;
+    const formData = new FormData();
+    formData.append("regdno", studentID);
+    formData.append("name", name);
+    formData.append("email", email);
+    formData.append("phone", phone);
+    formData.append(
+      "department",
+      selectedDepartment ? selectedDepartment.value : null
+    );
+    formData.append("course", selectedCourse ? selectedCourse.value : null);
+    formData.append(
+      "location",
+      selectedLocation ? selectedLocation.value : null
+    );
+    formData.append("roomno", roomNo);
+    formData.append(
+      "complainttype",
+      selectedComplaintType ? selectedComplaintType.value : null
+    );
+    formData.append(
+      "complaintdesc",
+      selectedComplaintDescription ? selectedComplaintDescription.value : null
+    );
+    formData.append(
+      "complaintpriority",
+      selectedPriority ? selectedPriority.value : null
+    );
+    formData.append(
+      "avl_timefrom",
+      selectedFromTime ? selectedFromTime.value : null
+    );
+    formData.append("avl_timeto", selectedToTime ? selectedToTime.value : null);
+    formData.append("compregister", "compregister"); // Assuming 'compregister' is a fixed value
 
     try {
-      const response = await axios.post(URL, {
-        studentID,
-        name,
-        email,
-        phone,
-        department: selectedDepartment ? selectedDepartment.value : null,
-        course: selectedCourse ? selectedCourse.value : null,
-        location: selectedLocation ? selectedLocation.value : null,
-        roomNo,
-        complaintType: selectedComplaintType
-          ? selectedComplaintType.value
-          : null,
-        complaintDescription: selectedComplaintDescription
-          ? selectedComplaintDescription.value
-          : null,
-        priority: selectedPriority ? selectedPriority.value : null,
-        fromTime: selectedFromTime ? selectedFromTime.value : null,
-        toTime: selectedToTime ? selectedToTime.value : null,
-      });
-      console.log("Response:", response.status);
+      const response = await axios.post(
+        "https://backup.pondiuni.edu.in/services/eems/complaintform_student_insert.php",
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
 
       // Resetting state variables after successful submission
       setStudentID("");
@@ -567,8 +588,20 @@ const Electrical = () => {
       setSelectedPriority(null);
       setSelectedFromTime(null);
       setSelectedToTime(null);
+
+      // Extract the complaint ID from the response
+      const match = response.data.match(/YOUR COMPLAINT ID:(\d+)/);
+      const complaintID = match ? match[1] : "not available";
+
+      // Display success message with complaint ID
+      alert(
+        `Your complaint has been successfully submitted. Your complaint ID is: ${complaintID}`
+      );
     } catch (error) {
-      console.error("Error:", error.response.data);
+      console.error("Error:", error);
+      alert(
+        "Sorry, there was an error submitting your complaint. Please try again later."
+      );
     }
   };
 
