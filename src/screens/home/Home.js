@@ -28,7 +28,7 @@ export default function Home() {
   const fetchData = async () => {
     try {
       const response = await axios.get(apiUrl);
-      console.log("API response:", response.data);
+      // console.log("API response:", response.data);
       if (response.data.success) {
         const noticedata = response.data.data;
         // console.log('Original notice data:', noticedata);
@@ -54,7 +54,6 @@ export default function Home() {
     }
   };
 
-  // Function to format date
   // Function to format the date string
   const formatDate = (dateString) => {
     const options = {
