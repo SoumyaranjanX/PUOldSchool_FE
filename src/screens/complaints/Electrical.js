@@ -595,7 +595,7 @@ const Electrical = () => {
 
       // Display success message with complaint ID
       alert(
-        `Your complaint has been successfully submitted. Your complaint ID is: ${complaintID}`
+        `Your complaint has been successfully submitted. Your complaint ID is: ${complaintID}. Note this for future reference.`
       );
     } catch (error) {
       console.error("Error:", error);
