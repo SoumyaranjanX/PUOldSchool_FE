@@ -1,15 +1,15 @@
 import React, { useEffect, useState } from "react";
 import {
   View,
-  Text,
   ScrollView,
   ActivityIndicator,
   StyleSheet,
-  TouchableOpacity,
   Image,
-  Dimensions,
+  TouchableOpacity,
+  Text,
   Modal,
 } from "react-native";
+import { LinearGradient } from "expo-linear-gradient";
 import axios from "axios";
 import Header from "../../components/header/Header";
 import BottomBar from "../../components/bottombar/BottomBar";
@@ -21,11 +21,6 @@ const AllEvents = () => {
   const [error, setError] = useState(null);
   const [selectedEvent, setSelectedEvent] = useState(null);
   const [modalVisible, setModalVisible] = useState(false);
-
-  const handleImagePress = (index) => {
-    setSelectedEvent(events[index]);
-    setModalVisible(true);
-  };
 
   useEffect(() => {
     fetchData();
@@ -49,34 +44,45 @@ const AllEvents = () => {
     }
   };
 
+  const handleImagePress = (event) => {
+    setSelectedEvent(event);
+    setModalVisible(true);
+  };
+
   return (
     <View style={{ flex: 1 }}>
       <Header title="All Events" />
-      <View style={styles.container}>
+      <ScrollView
+        style={styles.scrollView}
+        contentContainerStyle={styles.scrollViewContent}
+      >
         {isLoading ? (
           <ActivityIndicator size="large" color="#F08E0F" />
         ) : error ? (
           <Text>{error}</Text>
         ) : (
-          <ScrollView>
-            {events.map((event, index) => (
-              <TouchableOpacity
-                key={index}
-                onPress={() => handleImagePress(index)}
-              >
+          events.map((event, index) => (
+            <TouchableOpacity
+              key={index}
+              onPress={() => handleImagePress(event)}
+            >
+              <View style={styles.imageContainer}>
                 <Image
                   source={{ uri: event.imageUrl }}
-                  style={{
-                    width: Dimensions.get("window").width,
-                    height: Dimensions.get("window").width * 0.5,
-                  }}
+                  style={styles.image}
                   resizeMode="cover"
                 />
-              </TouchableOpacity>
-            ))}
-          </ScrollView>
+                <LinearGradient // Overlaying the text with a gradient
+                  colors={["transparent", "rgba(0,0,0,0.6)"]}
+                  style={styles.gradient}
+                >
+                  <Text style={styles.eventName}>{event.eventName}</Text>
+                </LinearGradient>
+              </View>
+            </TouchableOpacity>
+          ))
         )}
-      </View>
+      </ScrollView>
       <BottomBar />
       {/* Modal for displaying details */}
       <Modal
@@ -95,9 +101,51 @@ const AllEvents = () => {
 };
 
 const styles = StyleSheet.create({
-  container: {
+  scrollView: {
     flex: 1,
-    padding: 10,
+    backgroundColor: "#FFF",
+  },
+  scrollViewContent: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    justifyContent: "center",
+    margin: 15,
+  },
+  imageContainer: {
+    width: 470,
+    height: 200,
+    borderRadius: 10,
+    marginBottom: 10,
+    backgroundColor: "#fff",
+    borderColor: "#F08E0F",
+    borderWidth: 1,
+    shadowColor: "#000",
+    shadowOpacity: 0.3,
+    shadowRadius: 5,
+    elevation: 5,
+    justifyContent: "flex-end",
+    alignItems: "center",
+    position: "relative",
+  },
+  image: {
+    width: "100%",
+    height: "100%",
+    borderRadius: 10,
+  },
+  gradient: {
+    position: "absolute",
+    left: 0,
+    right: 0,
+    bottom: 0,
+    paddingVertical: 8,
+    paddingHorizontal: 12,
+    borderBottomLeftRadius: 10,
+    borderBottomRightRadius: 10,
+  },
+  eventName: {
+    color: "#F08E0F",
+    fontSize: 20,
+    fontWeight: "bold",
   },
 });
 
