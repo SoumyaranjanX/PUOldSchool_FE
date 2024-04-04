@@ -6,21 +6,24 @@ import QuickLinkCard from './QuickLinkCard';
 const QuickLink = () => {
   const navigation = useNavigation()
   const quickLinks = [
-    { id: 1, imageSource: require('../../../assets/quicklinks/events.png'), actionText: "Event's Photos" },
+    { id: 1, imageSource: require('../../../assets/quicklinks/events.png'), actionText: "Events" },
     { id: 2, imageSource: require('../../../assets/quicklinks/bus.png'), actionText: 'Transportation' },
-    { id: 3, imageSource: require('../../../assets/quicklinks/map.png'), actionText: 'University Map' },
-    { id: 4, imageSource: require('../../../assets/quicklinks/complaints.png'), actionText: 'Uni Complaints' },
+    { id: 3, imageSource: require('../../../assets/quicklinks/map.png'), actionText: 'Uni-Map' },
+    { id: 4, imageSource: require('../../../assets/quicklinks/complaints.png'), actionText: 'Complaints' },
   ];
 
   const handleClick = (action) => {
-    if(action == 'Transportation'){
+    if(action === 'Transportation'){
       navigation.navigate('SearchStop')
     }
-    else if(action  == 'University Map'){
+    else if(action  === 'Uni-Map'){
       navigation.navigate("Map")
     }
-    else if(action == 'Uni Complaints'){
+    else if(action === 'Complaints'){
       navigation.navigate('SelectComplaint')
+    }
+    else if(action === 'Events'){
+      navigation.navigate('AllEvents')
     }
   }
 
@@ -31,7 +34,7 @@ const QuickLink = () => {
           key={link.id}
           imageSource={link.imageSource}
           actionText={link.actionText}
-          onPress={() => handleClick(link.actionText)} // Replace with your action
+          onPress={() => handleClick(link.actionText)}
         />
       ))}
     </View>
