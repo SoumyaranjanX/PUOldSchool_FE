@@ -6,7 +6,7 @@ const PDFViewer = ({ image }) => {
   return (
     <View style={styles.container}>
         <Image style={{flex:1, width:'100%'}}
-          source={image} 
+          source={{uri:image}} 
           resizeMode='contain'
         />
     </View>

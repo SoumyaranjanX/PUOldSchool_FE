@@ -15,6 +15,7 @@ import RequestEvent from './src/screens/events/RequestEvent';
 import Map from './src/screens/map/Map';
 import SelectComplaint from './src/screens/complaints/SelectComplaint'
 import Electrical from './src/screens/complaints/Electrical';
+import AllEvents from './src/screens/events/AllEvents';
 
 const Stack = createNativeStackNavigator();
 
@@ -75,6 +76,7 @@ export default function App() {
               <Stack.Screen name="Map" component={Map} />
               <Stack.Screen name="SelectComplaint" component={SelectComplaint} />
               <Stack.Screen name="ElectricalComplaint" component={Electrical} />
+              <Stack.Screen name="AllEvents" component={AllEvents} />
 
               <Stack.Screen name="Profile" >
                 {(props) => <Profile {...props} onSignOut={handleSignOut} />}
