@@ -7,6 +7,7 @@ import {
   Text,
 } from "react-native";
 import Header from "../../components/header/Header";
+import Slider from "../../components/hero/Slider";
 import AnnouncementDetails from "../../components/announcment/AnnouncementDetails";
 import QuickLink from "../../components/quicklink/QuickLink";
 import Chat from "../../components/chat/Chat";
@@ -14,7 +15,7 @@ import ChatType from "../../components/chat/ChatType";
 import BottomBar from "../../components/bottombar/BottomBar";
 import axios from "axios";
 
-export default function Home() {
+export default function Home({onSignOut}) {
   const [latestNotice, setLatestNotice] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -70,9 +71,10 @@ export default function Home() {
     <>
       <StatusBar backgroundColor={"#F08E0F"} />
       <View style={{ flex: 1 }}>
-        <Header />
+        <Header onSignOut={onSignOut} />
         <View style={{ flex: 1, paddingBottom: 10 }}>
           <ScrollView>
+            <Slider />
             {isLoading ? (
               <ActivityIndicator size="large" color="#F08E0F" />
             ) : error ? (

@@ -1,17 +1,18 @@
+import React, { useState } from "react";
+import { View, StatusBar, Image, TextInput, Text, TouchableOpacity, Alert, ActivityIndicator } from "react-native";
 import { useNavigation } from "@react-navigation/native";
-import { useState } from "react";
-import { View, StatusBar, Image, TextInput, Text, TouchableOpacity, Alert } from "react-native"
 import axios from "axios";
 
 export default function SignUp() {
 
-    const navigatation = useNavigation()
+    const navigation = useNavigation()
 
     const [name, setName] = useState();
     const [regNo, setRegNo] = useState();
     const [department, setDepartment] = useState();
     const [email, setEmail] = useState();
     const [password, setPassword] = useState();
+    const [loading, setLoading] = useState(false);
 
     const handleSubmit = () => {
         if (!name || !regNo || !department || !email || !password) {
@@ -31,27 +32,30 @@ export default function SignUp() {
             email,
             password
         }
-        const URL = `${process.env.EXPO_PUBLIC_API_HOST}/api/users/register`
+        const URL = `${process.env.EXPO_PUBLIC_API_HOST}/api/users/register`;
+
+        setLoading(true); // Start loading
 
         axios.post(URL, data)
             .then(response => {
-                if(response.data.statusCode == 200){
-                    Alert.alert(response.data.message)
-                    navigatation.navigate('SignIn')
+                setLoading(false); // Stop loading
+                if(response.data.statusCode === 200) {
+                    Alert.alert(response.data.message);
+                    navigation.navigate('SignIn');
                 }
             })
             .catch(error => {
+                setLoading(false); // Stop loading
                 if (error.response) {
-                    console.log(error.response.data)
-                    Alert.alert(error.response.data.message)
+                    console.log(error.response.data);
+                    Alert.alert(error.response.data.message);
                 } else if (error.request) {
                     console.log('No response received:', error.request);
                 } else {
                     console.log('Error:', error.message);
                 }
-            })
-
-    }
+            });
+    };
 
     const logo = require('../../../assets/logo/logo_rc_transbg.png');
 
@@ -113,7 +117,7 @@ export default function SignUp() {
                         marginTop: 20
 
                     }}
-                    placeholder="Departpment (Full Name)"
+                    placeholder="Department (Full Name)"
                     value={department}
                     onChangeText={(department) => setDepartment(department)}
                 />
@@ -156,9 +160,13 @@ export default function SignUp() {
                     }}
                     onPress={handleSubmit}
                 >
-                    <Text style={{ color: 'white', fontSize: 16 }}>Sign Up</Text>
+                    {loading ? (
+                        <ActivityIndicator color="white" />
+                    ) : (
+                        <Text style={{ color: 'white', fontSize: 16 }}>Sign Up</Text>
+                    )}
                 </TouchableOpacity>
-                <TouchableOpacity onPress={() => navigatation.navigate('SignIn')}>
+                <TouchableOpacity onPress={() => navigation.navigate('SignIn')}>
                     <Text style={{ color: '#000', fontSize: 16, marginTop: 20 }}>Already Registered? Sign In</Text>
                 </TouchableOpacity>
 

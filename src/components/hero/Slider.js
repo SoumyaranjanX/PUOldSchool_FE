@@ -2,14 +2,14 @@ import React, { useState, useEffect, useRef } from 'react';
 import { View, Image, ScrollView, Dimensions, TouchableOpacity, Modal, Text } from 'react-native';
 import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import SliderDetails from './SliderDetails'; // Import the SliderDetails component
+import SliderDetails from './SliderDetails';
 
 const Slider = () => {
     const [currentPage, setCurrentPage] = useState(0);
     const scrollViewRef = useRef(null);
     const [events, setEvents] = useState([]);
-    const [selectedEvent, setSelectedEvent] = useState(null); // State to hold the selected event
-    const [modalVisible, setModalVisible] = useState(false); // State to control the visibility of the modal
+    const [selectedEvent, setSelectedEvent] = useState(null);
+    const [modalVisible, setModalVisible] = useState(false);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -23,8 +23,12 @@ const Slider = () => {
                         },
                     })
                         .then(response => {
-                            setEvents(response.data.data);
-                            console.log(events)
+                            if (response.data && response.data.data) {
+                                setEvents(response.data.data);
+                                console.log(events)
+                            } else {
+                                console.log("No data received from the server or unexpected data structure");
+                            }
                         })
                         .catch(error => {
                             console.log(error.response.data);
@@ -39,6 +43,8 @@ const Slider = () => {
 
         fetchData();
     }, []);
+
+
 
     useEffect(() => {
         const interval = setInterval(() => {
@@ -73,7 +79,7 @@ const Slider = () => {
                 showsHorizontalScrollIndicator={false}
                 onMomentumScrollEnd={handlePageChange}
             >
-                {events ? (
+                {events && events.length > 0 ? (
                     events.map((event, index) => (
                         <TouchableOpacity key={index} onPress={() => handleImagePress(index)}>
                             <Image
@@ -89,8 +95,8 @@ const Slider = () => {
                 ) : (
                     <Text>No events to display</Text>
                 )}
-
             </ScrollView>
+
 
             {/* Modal for displaying details */}
             <Modal

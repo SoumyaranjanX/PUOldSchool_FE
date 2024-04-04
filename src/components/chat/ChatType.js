@@ -18,22 +18,24 @@ export default function ChatType() {
 
     const sendMessage = async () => {
         const accessToken = await AsyncStorage.getItem('accessToken');
-        if (accessToken) {
-            socket.emit("send_message", {
-                message: message, 
-                selectedType: selectedType, 
-                selectedImage: selectedImage,
-                selectedBGColor: selectedBGColor,
-                selectedPColor: selectedPColor,
-                messageTime: new Date(),
-                accessToken: accessToken
-            })
-            setMessage('')
-        }
-        else{
+        if(message!=""){ 
+            if (accessToken) {
+                socket.emit("send_message", {
+                    message: message, 
+                    selectedType: selectedType, 
+                    selectedImage: selectedImage,
+                    selectedBGColor: selectedBGColor,
+                    selectedPColor: selectedPColor,
+                    messageTime: new Date(),
+                    accessToken: accessToken
+                })
+                setMessage('')
+            }
+            else{
 
+            }
+            setSelectedType(null)
         }
-        setSelectedType(null)
     }
     const handleInput = (e) => {
         setMessage(e)

@@ -4,7 +4,7 @@ import { StyleSheet, View, Image, TouchableOpacity } from "react-native";
 import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-const Header = () => {
+const Header = ({onSignOut}) => {
   const navigation = useNavigation();
 
   const [profileImage, setProfileImage] = useState()
@@ -25,6 +25,7 @@ const Header = () => {
           })
           .catch(error => {
             console.log(error.response.data);
+            onSignOut()
           });
         } else {
           console.log("something went wrong")
@@ -44,7 +45,9 @@ const Header = () => {
       </TouchableOpacity>
 
       <TouchableOpacity onPress={() => navigation.navigate("Profile")} style={styles.profileContainer}>
-        <Image source={{uri: profileImage}} style={styles.profileImage} />
+        {profileImage?
+        <Image source={{uri: `${profileImage}?${new Date().getTime()}`}} style={styles.profileImage} />
+        :<></>}
       </TouchableOpacity>
     </View>
   );

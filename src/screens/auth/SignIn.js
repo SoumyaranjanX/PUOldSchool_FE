@@ -1,6 +1,6 @@
-import { View, StatusBar, Image, TextInput, Text, TouchableOpacity, Alert } from "react-native"
+import React, { useState } from "react";
+import { View, StatusBar, Image, TextInput, Text, TouchableOpacity, Alert, ActivityIndicator } from "react-native";
 import { useNavigation } from "@react-navigation/native";
-import { useState } from "react";
 import axios from "axios";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -8,8 +8,9 @@ function SignIn({onSignIn}) {
 
     const navigatation = useNavigation()
 
-    const [email, setEmail] = useState()
-    const [password, setPassword] = useState()
+    const [email, setEmail] = useState();
+    const [password, setPassword] = useState();
+    const [loading, setLoading] = useState(false);
 
     const handleSubmit = () => {
         if (!email || !password) {
@@ -26,12 +27,15 @@ function SignIn({onSignIn}) {
             email,
             password
         }
-        const URL = `${process.env.EXPO_PUBLIC_API_HOST}/api/users/login`
+        const URL = `${process.env.EXPO_PUBLIC_API_HOST}/api/users/login`;
+
+        setLoading(true); // Start loading
 
         axios.post(URL, data)
-            .then( async response => {
-                if(response.data.statusCode == 200){
-                    const accessToken = response.data.data.accessToken
+            .then(async response => {
+                setLoading(false); // Stop loading
+                if (response.data.statusCode === 200) {
+                    const accessToken = response.data.data.accessToken;
                     try {
                         await AsyncStorage.setItem('accessToken', accessToken);
                         console.log('Access token stored successfully');
@@ -42,17 +46,17 @@ function SignIn({onSignIn}) {
                 }
             })
             .catch(error => {
+                setLoading(false); // Stop loading
                 if (error.response) {
-                    console.log(error.response.data)
-                    Alert.alert(error.response.data.message)
+                    console.log(error.response.data);
+                    Alert.alert(error.response.data.message);
                 } else if (error.request) {
                     console.log('No response received:', error.request);
                 } else {
                     console.log('Error:', error.message);
                 }
-            })
-
-    }
+            });
+    };
 
     const logo = require('../../../assets/logo/logo_rc_transbg.png');
 
@@ -114,7 +118,11 @@ function SignIn({onSignIn}) {
                     }}
                     onPress={handleSubmit}
                 >
-                    <Text style={{ color: 'white', fontSize: 16 }}>Sign In</Text>
+                    {loading ? (
+                        <ActivityIndicator color="white" />
+                    ) : (
+                        <Text style={{ color: 'white', fontSize: 16 }}>Sign In</Text>
+                    )}
                 </TouchableOpacity>
                 <TouchableOpacity onPress={ () => navigatation.navigate('SignUp')}>
                     <Text style={{ color: '#000', fontSize: 16, marginTop:20 }}>New to Old School? Sign Up</Text>
@@ -124,6 +132,5 @@ function SignIn({onSignIn}) {
         </>
     )
 }
-
 
 export default SignIn;

@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from "react";
-import { View, ScrollView, Dimensions } from "react-native";
+import { View, ScrollView, Dimensions, ActivityIndicator } from "react-native";
 import ChatBubble from "./ChatBubble";
 import { io } from "socket.io-client";
 import axios from "axios";
@@ -130,16 +130,21 @@ export default function Chat({ community = false }) {
                 onContentSizeChange={() => {pageNumber==1?scrollToBottom():''}}
             >
 
-                {messagesData.map((data, index) => (
-                    <ChatBubble key={index}
-                        bgColor={data.selectedBGColor}
-                        pColor={data.selectedPColor}
-                        message={data.message}
-                        messageType={data.selectedType}
-                        messageTime={data.messageTime} 
-                        imageUrl={data.imageUrl}
+                {loading ? (
+                    <ActivityIndicator size="large" color="#F08E0F" style={{ marginTop: 20 }} />
+                ) : (
+                    messagesData.map((data, index) => (
+                        <ChatBubble key={index}
+                            messageId={data._id}
+                            bgColor={data.selectedBGColor}
+                            pColor={data.selectedPColor}
+                            message={data.message}
+                            messageType={data.selectedType}
+                            messageTime={data.messageTime} 
+                            imageUrl={data.imageUrl}
                         />
-                ))}
+                    ))
+                )}
 
             </ScrollView>
         </View>

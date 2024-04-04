@@ -16,6 +16,7 @@ import Map from './src/screens/map/Map';
 import SelectComplaint from './src/screens/complaints/SelectComplaint'
 import Electrical from './src/screens/complaints/Electrical';
 import AllEvents from './src/screens/events/AllEvents';
+import MyThreads from './src/screens/community/MyThreads';
 
 const Stack = createNativeStackNavigator();
 
@@ -67,7 +68,9 @@ export default function App() {
           }}>
           {isAuthenticated ? (
             <>
-              <Stack.Screen name="Home" component={Home} />
+              <Stack.Screen name="Home">
+                {(props) => <Home {...props} onSignOut={handleSignOut} />}
+              </Stack.Screen>
               <Stack.Screen name="Community" component={Community} />
               <Stack.Screen name="Action" component={Action} />
               <Stack.Screen name="SearchStop" component={SearchStop} />
@@ -77,6 +80,7 @@ export default function App() {
               <Stack.Screen name="SelectComplaint" component={SelectComplaint} />
               <Stack.Screen name="ElectricalComplaint" component={Electrical} />
               <Stack.Screen name="AllEvents" component={AllEvents} />
+              <Stack.Screen name="MyThreads" component={MyThreads} />
 
               <Stack.Screen name="Profile" >
                 {(props) => <Profile {...props} onSignOut={handleSignOut} />}

@@ -15,6 +15,7 @@
       "distribution": "internal"
     },
     "production": {
+      "autoIncrement": true,
       "env": {
         "EXPO_PUBLIC_API_HOST": "https://puoldschool-be.onrender.com"
       }
