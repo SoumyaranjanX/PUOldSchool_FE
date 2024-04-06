@@ -10,9 +10,14 @@ export default function SearchStop() {
     { id: 1, name: 'Library' },
     { id: 2, name: 'Ponlait' },
     { id: 3, name: 'Cauvery' },
-    { id: 4, name: 'BoysMess' },
-    { id: 5, name: 'FoodScience' },
-    { id: 6, name: 'Sj' },
+    { id: 4, name: 'Girls Mess' },
+    { id: 5, name: 'Kangai' },
+    { id: 6, name: 'Ammudam Mess' },
+    { id: 7, name: 'Mega Mess' },
+    { id: 8, name: 'ilangon hostel' },
+    { id: 9, name: 'Food science dept' },
+    { id: 10, name: 'Sj' },
+    { id: 11, name: 'UMISARC' },
   ]);
   const [data, setData] = useState({
     towardLibrary: [],
@@ -32,7 +37,7 @@ export default function SearchStop() {
             towardLibrary: response.data.data.towardLibrary.sort(),
             towardSJ: response.data.data.towardSJ.sort()
           };
-          setData(sortedData);  
+          setData(sortedData);
         } else {
           Alert.alert(response.data.message);
           setData({
@@ -58,28 +63,28 @@ export default function SearchStop() {
     const currentTime = new Date().getTime();
     for (let i = 0; i < timings.length; i++) {
       const [, hours, minutes, period] = timings[i].match(/(\d+):(\d+) (AM|PM)/);
-  
+
       let hours24 = parseInt(hours, 10);
       if (period === 'PM' && hours24 < 12) {
         hours24 += 12;
       } else if (period === 'AM' && hours24 === 12) {
         hours24 = 0;
       }
-  
+
       const busTime = new Date();
       busTime.setHours(hours24);
       busTime.setMinutes(parseInt(minutes, 10));
       busTime.setSeconds(0);
-  
+
       const busTimeInMillis = busTime.getTime();
-  
+
       if (busTimeInMillis > currentTime) {
         return i;
       }
     }
     return -1;
   };
-  
+
 
   return (
     <>
