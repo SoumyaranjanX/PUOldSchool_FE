@@ -136,6 +136,7 @@ export default function Chat({ community = false }) {
                     messagesData.map((data, index) => (
                         <ChatBubble key={index}
                             messageId={data._id}
+                            senderId={data.senderId}
                             bgColor={data.selectedBGColor}
                             pColor={data.selectedPColor}
                             message={data.message}

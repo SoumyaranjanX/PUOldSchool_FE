@@ -1,9 +1,7 @@
-import { View, Text, Image, Animated, Easing, TouchableWithoutFeedback, Modal } from "react-native"
+import { View, Text, Image, Animated, TouchableWithoutFeedback } from "react-native"
 import { useEffect, useState } from "react";
-import CreateThread from "./CreateThread";
 
-export default function ChatBubble({ messageId, senderId, bgColor, pColor, message, messageType, messageTime, imageUrl }) {
-    const [modalVisible, setModalVisible] = useState(false);
+export default function ThreadChatBubble({ messageId, senderId, bgColor, pColor, message, messageType, messageTime, imageUrl }) {
     const userImage = imageUrl
 
     // Parse messageTime into a Date object
@@ -48,39 +46,10 @@ export default function ChatBubble({ messageId, senderId, bgColor, pColor, messa
     // Combine relative time and formatted time
     const formattedTime = `${relativeTime}, ${formatTime(messageDate)}`;
 
-    const animatedValue = new Animated.Value(0);
-
-    const shakeAnimation = animatedValue.interpolate({
-        inputRange: [0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1],
-        outputRange: [0, -10, 10, -10, 10, -10, 10, -10, 10, -10, 0]
-    });
-
-    const handleLongPress = () => {
-        console.log("Long pressed")
-        Animated.sequence([
-            Animated.timing(animatedValue, {
-                toValue: 0.5,
-                duration: 100,
-                easing: Easing.linear,
-                useNativeDriver: true,
-            }),
-            Animated.timing(animatedValue, {
-                toValue: 1,
-                duration: 100,
-                easing: Easing.linear,
-                useNativeDriver: true,
-            })
-        ]).start();
-        setModalVisible(true);
-    };
-
-
     return (
         <>
-            <TouchableWithoutFeedback
-                onLongPress={handleLongPress}
-            >
-                <Animated.View style={[{ flexDirection: 'row', marginBottom: 10, marginTop: 10, transform: [{ translateX: shakeAnimation }] }]}>
+            <TouchableWithoutFeedback>
+                <Animated.View style={[{ flexDirection: 'row', marginBottom: 10, marginTop: 10 }]}>
                     <View style={{ width: 70 }}>
                         <View style={{ width: 45, height: 45, backgroundColor: 'blue', borderRadius: 50, overflow: 'hidden' }}>
                             <Image
@@ -126,26 +95,6 @@ export default function ChatBubble({ messageId, senderId, bgColor, pColor, messa
                     </View>
                 </Animated.View>
             </TouchableWithoutFeedback>
-
-            {/* Modal for displaying details */}
-            <Modal
-                animationType="fade"
-                transparent={true}
-                visible={modalVisible}
-                onRequestClose={() => setModalVisible(false)}
-            >
-                <CreateThread 
-                    messageId={messageId}
-                    senderId={senderId}
-                    userImage={userImage}
-                    formattedTime={formattedTime}
-                    message={message}
-                    pColor={pColor}
-                    bgColor={bgColor}
-                    messageType={messageType}
-                    closeModal={() => setModalVisible(false)}
-                />
-            </Modal>
         </>
     );
-};
+}

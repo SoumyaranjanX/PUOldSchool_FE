@@ -17,6 +17,7 @@ import SelectComplaint from './src/screens/complaints/SelectComplaint'
 import Electrical from './src/screens/complaints/Electrical';
 import AllEvents from './src/screens/events/AllEvents';
 import MyThreads from './src/screens/community/MyThreads';
+import SingleThread from './src/screens/community/SingleThread';
 
 const Stack = createNativeStackNavigator();
 
@@ -81,6 +82,7 @@ export default function App() {
               <Stack.Screen name="ElectricalComplaint" component={Electrical} />
               <Stack.Screen name="AllEvents" component={AllEvents} />
               <Stack.Screen name="MyThreads" component={MyThreads} />
+              <Stack.Screen name='SingleThread' component={SingleThread} />
 
               <Stack.Screen name="Profile" >
                 {(props) => <Profile {...props} onSignOut={handleSignOut} />}

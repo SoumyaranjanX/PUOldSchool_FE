@@ -1,17 +1,54 @@
 import { useState } from 'react';
-import { Text, View, ScrollView, Dimensions, TouchableOpacity, Image, Animated, TextInput } from 'react-native'
+import { Text, View, Dimensions, TouchableOpacity, Image, Animated, TextInput, Alert, ActivityIndicator } from 'react-native'
 import { Feather } from 'react-native-vector-icons';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import axios from 'axios';
+import { useNavigation } from "@react-navigation/native"
 
-export default function CreateThread({ messageId, userImage, formattedTime, message, pColor, bgColor, messageType, closeModal }) {
+export default function CreateThread({ messageId, senderId, userImage, formattedTime, message, pColor, bgColor, messageType, closeModal }) {
+    const navigation = useNavigation();
     const [typeMessage, setTypeMessage] = useState('');
+    const [isLoading, setIsLoading] = useState(false); // State variable for loading indicator
 
     const handleInput = (text) => {
         setTypeMessage(text)
     }
 
-    const CreateThread = () => {
-        console.log("Message Id: ",messageId)
-        console.log("Thread Message: ",typeMessage)
+    const CreateNewThread = async () => {
+        setIsLoading(true); // Set loading state to true
+        try {
+            const accessToken = await AsyncStorage.getItem('accessToken');
+            if (accessToken) {
+                const URL = `${process.env.EXPO_PUBLIC_API_HOST}/api/chat/createThread`;
+                const data = {
+                    messageId: messageId,
+                    initialMessage: typeMessage
+                };
+                axios.post(URL, data, {
+                    headers: {
+                        Authorization: `Bearer ${accessToken}`,
+                    }
+                })
+                    .then(response => {
+                        if(response.data.statusCode == 200){
+                            setIsLoading(false);
+                            navigation.navigate('SingleThread', { threadId:response.data.data.threadId })
+                        }
+                        else{
+                            console.log(response)
+                            Alert.alert(response.data);
+                            setIsLoading(false); // Reset loading state on error
+                        }
+                    })
+                    .catch(error => {
+                        Alert.alert(error.response.data.message);
+                        setIsLoading(false); // Reset loading state on error
+                    });
+            }
+        } catch (error) {
+            console.log('Error Creating Thread:', error);
+            setIsLoading(false); // Reset loading state on error
+        }
     }
 
     return (
@@ -113,11 +150,14 @@ export default function CreateThread({ messageId, userImage, formattedTime, mess
                                 shadowOpacity: 1,
                                 shadowRadius: 20,
                                 elevation: 3, // For Android
-                            }} onPress={() => {CreateThread()}}>
-                                <Feather name="send" size={20} color="#fff" />
+                            }} onPress={() => {CreateNewThread()}}>
+                                {isLoading ? (
+                                    <ActivityIndicator size="small" color="#fff" />
+                                ) : (
+                                    <Feather name="send" size={20} color="#fff" />
+                                )}
                             </TouchableOpacity>
                         </View>
-                    
                     </View>
                 </View>
             </View>
