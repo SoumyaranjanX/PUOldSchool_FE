@@ -5,6 +5,7 @@ import {
   StyleSheet,
   TouchableOpacity,
   Animated,
+  Image,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import Header from "../../components/header/Header";
@@ -16,13 +17,11 @@ const SelectComplaint = () => {
   const pulseAnimation = useState(new Animated.Value(1))[0];
 
   const handlePress = (serviceType) => {
-    // Handle button press
     if (serviceType === "Electrical") {
       navigation.navigate("ElectricalComplaint");
     } else if (serviceType === "Civil") {
-      // Display a message indicating the feature is coming soon
       setShowMessage(true);
-      setTimeout(() => setShowMessage(false), 2000); // Display the message for 2 seconds
+      setTimeout(() => setShowMessage(false), 3000);
     }
   };
 
@@ -53,6 +52,11 @@ const SelectComplaint = () => {
           }}
           style={[styles.button, { transform: [{ scale: pulseAnimation }] }]}
         >
+          <Image
+            source={require("../../../assets/electrical_background.png")}
+            style={styles.imageContainer}
+            resizeMode="cover"
+          />
           <Text style={styles.buttonText}>Electrical</Text>
         </TouchableOpacity>
         <TouchableOpacity
@@ -62,6 +66,11 @@ const SelectComplaint = () => {
           }}
           style={[styles.button, { transform: [{ scale: pulseAnimation }] }]}
         >
+          <Image
+            source={require("../../../assets/civil_background.png")}
+            style={styles.imageContainer}
+            resizeMode="cover"
+          />
           <Text style={styles.buttonText}>Civil</Text>
         </TouchableOpacity>
       </View>
@@ -94,18 +103,37 @@ const styles = StyleSheet.create({
     color: "#F08E0F",
   },
   button: {
-    width: "100%",
-    paddingVertical: 15,
+    width: 190,
+    height: 220,
+    marginBottom: 50,
     borderRadius: 10,
-    alignItems: "center",
+    overflow: "hidden",
+    backgroundColor: "#fff",
+    shadowColor: "#000",
+    shadowOpacity: 0.3,
+    shadowRadius: 5,
+    elevation: 5,
     justifyContent: "center",
-    backgroundColor: "#F08E0F",
-    marginBottom: 10,
+    alignItems: "center",
+  },
+  imageContainer: {
+    width: 150,
+    height: 150,
+    overflow: "hidden",
+    borderRadius: 10,
+  },
+  image: {
+    width: "80%",
+    height: "80%",
+    resizeMode: "contain",
   },
   buttonText: {
-    color: "black",
-    fontSize: 16,
+    position: "absolute",
+    bottom: 5,
+    color: "#F08E0F",
+    fontSize: 25,
     fontWeight: "bold",
+    textAlign: "center",
   },
   animationContainer: {
     position: "absolute",
