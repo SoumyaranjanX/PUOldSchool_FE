@@ -7,7 +7,6 @@ import {
   Image,
   StyleSheet,
   Modal,
-  Button,
 } from "react-native";
 import { Feather } from "react-native-vector-icons";
 import PDFViewer from "./PDFViewer";
@@ -19,12 +18,9 @@ const AnnouncementDetails = ({
   image,
   page = "other",
 }) => {
-  // console.log(image)
   const navigation = useNavigation();
   const greenTick = require("../../../assets/green_tick.gif");
   const [modalVisible, setModalVisible] = useState(false);
-
-  console.log(image);
 
   return (
     <>
@@ -53,90 +49,69 @@ const AnnouncementDetails = ({
           }}
         >
           <View style={{ flexDirection: "row", alignItems: "center" }}>
-            <View
-              style={{ flex: 0.75, flexDirection: "row", alignItems: "center" }}
-            >
-              <Image source={greenTick} style={{ width: 20, height: 20 }} />
-              <Text
-                style={{
-                  marginLeft: 10,
-                  fontSize: 20,
-                  fontWeight: "700",
-                  color: "#F08E0F",
-                }}
-              >
-                {title}
-              </Text>
-            </View>
-            {page == "home" ? (
-              <View
-                style={{
-                  flex: 0.25,
-                  flexDirection: "row",
-                  justifyContent: "center",
-                  backgroundColor: "#EAFDFE",
-                  borderRadius: 10,
-                  padding: 4,
-                }}
-              >
-                <TouchableOpacity
-                  onPress={() => navigation.navigate("Announcement")}
-                >
-                  <Text style={{ color: "#00D699", fontWeight: 600 }}>
-                    {" "}
-                    View All{" "}
-                  </Text>
-                </TouchableOpacity>
-              </View>
-            ) : (
-              ""
-            )}
-          </View>
-          <View
-            style={{ flexDirection: "row", alignItems: "center", marginTop: 5 }}
-          >
-            <View
-              style={{ flex: 0.75, flexDirection: "row", alignItems: "center" }}
-            >
-              <Feather name="calendar" size={16} color="#666666" />
-              <Text
-                style={{
-                  marginLeft: 10,
-                  fontSize: 11,
-                  fontWeight: "400",
-                  color: "#000",
-                  paddingLeft: 3,
-                }}
-              >
-                {date}
-              </Text>
-            </View>
-          </View>
-          <View
-            style={{ flexDirection: "row", alignItems: "center", marginTop: 5 }}
-          >
-            <View
+            <Image source={greenTick} style={{ width: 20, height: 20 }} />
+            <Text
               style={{
-                flexDirection: "row",
-                alignItems: "center",
-                width: "100%",
+                marginLeft: 10,
+                fontSize: 20,
+                fontWeight: "700",
+                color: "#F08E0F",
               }}
             >
-              <Text
-                style={{
-                  fontSize: 13,
-                  fontWeight: "500",
-                  color: "#000",
-                  paddingLeft: 30,
-                  paddingRight: 5,
-                  width: "100%",
-                  textAlign: "justify",
-                }}
-              >
-                {content}
-              </Text>
-            </View>
+              {title}
+            </Text>
           </View>
+          <View
+            style={{ flexDirection: "row", alignItems: "center", marginTop: 5 }}
+          >
+            <Feather name="calendar" size={16} color="#666666" />
+            <Text
+              style={{
+                marginLeft: 10,
+                fontSize: 11,
+                fontWeight: "400",
+                color: "#000",
+                paddingLeft: 3,
+              }}
+            >
+              {date}
+            </Text>
+          </View>
+          <View
+            style={{ flexDirection: "row", alignItems: "center", marginTop: 5 }}
+          >
+            <Text
+              style={{
+                fontSize: 13,
+                fontWeight: "500",
+                color: "#000",
+                paddingLeft: 30,
+                paddingRight: 5,
+                width: "100%",
+                textAlign: "justify",
+              }}
+            >
+              {content}
+            </Text>
+          </View>
+          {page == "home" && (
+            <TouchableOpacity
+              onPress={() => navigation.navigate("Announcement")}
+              style={{
+                backgroundColor: "#EAFDFE",
+                borderRadius: 10,
+                padding: 4,
+                marginTop: 10,
+                // marginLeft: "auto",
+                width: "100%",
+                alignItems: "center",
+              }}
+            >
+              <Text style={{ color: "#00D699", fontWeight: 600 }}>
+                View All
+              </Text>
+            </TouchableOpacity>
+          )}
         </View>
       </TouchableOpacity>
 
